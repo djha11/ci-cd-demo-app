@@ -18,6 +18,11 @@ pipeline {
                 '''
             }
         }
+	stage('Clean Workspace') {
+    steps {
+        cleanWs()  // Deletes all files in workspace before fetching code
+    }
+}
 
         stage('Checkout Code') {
             steps {
