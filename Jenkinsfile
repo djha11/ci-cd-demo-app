@@ -10,12 +10,14 @@ pipeline {
         stage('Kill Old Spring Boot Process') {
             steps {
                 bat '''
-                echo Checking for any process using port 8081...
-                for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8081') do (
-                    echo Killing process with PID %%a
-                    taskkill /PID %%a /F
-                )
-                '''
+echo Checking for any process using port 8081...
+for /F "tokens=5" %a in ('netstat -ano | findstr :8081') do (
+  echo Killing process with PID %a
+  taskkill /PID %a /F
+) || echo No process found on port 8081.
+exit 0
+'''
+
             }
         }
 	stage('Clean Workspace') {
