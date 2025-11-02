@@ -14,24 +14,28 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                sh "mvn clean package"
+                bat 'mvn clean package'
             }
         }
 
         stage('Stop Old App') {
             steps {
-                sh '''
-                PID=$(netstat -ano | findstr :8081 | awk "{print \$5}")
-                if [ ! -z "$PID" ]; then
-                    taskkill /PID $PID /F
-                fi
+                bat '''
+                @echo off
+                echo Checking for any process using port 8081...
+                for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8081') do (
+                    echo Killing process %%a using port 8081...
+                    taskkill /PID %%a /F
+                )
+                echo Port 8081 is now free.
                 '''
             }
         }
 
         stage('Deploy New App') {
             steps {
-                sh "java -jar target/demo-1.0.0.jar --server.port=8081 &"
+                bat 'start java -jar target\\demo-1.0.0.jar --server.port=8081'
+
             }
         }
     }
