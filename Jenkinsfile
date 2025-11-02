@@ -8,18 +8,21 @@ pipeline {
     stages {
 
         stage('Kill Old Spring Boot Process') {
-            steps {
-                bat '''
-echo Checking for any process using port 8081...
-for /F "tokens=5" %a in ('netstat -ano | findstr :8081') do (
-  echo Killing process with PID %a
-  taskkill /PID %a /F
-) || echo No process found on port 8081.
-exit 0
-'''
-
-            }
+    steps {
+        powershell '''
+        Write-Host "Checking for any process using port 8081..."
+        $proc = netstat -ano | findstr ":8081"
+        if ($proc) {
+            $pid = ($proc -split "\\s+")[-1]
+            Write-Host "Killing process with PID $pid"
+            Stop-Process -Id $pid -Force
+        } else {
+            Write-Host "No process found on port 8081."
         }
+        '''
+    }
+}
+
 	stage('Clean Workspace') {
     steps {
         cleanWs()  // Deletes all files in workspace before fetching code
