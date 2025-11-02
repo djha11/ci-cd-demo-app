@@ -22,7 +22,7 @@ pipeline {
 
         stage('Deploy New App') {
             steps {
-                sh 'nohup java -jar target/demo-1.0.0.jar > app.log 2>&1 &'
+                sh 'nohup java -jar target/demo-1.0.0.jar --server.port=8081 > app.log 2>&1 &'
             }
         }
     }
