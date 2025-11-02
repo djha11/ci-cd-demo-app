@@ -57,13 +57,15 @@ pipeline {
             }
         }
 
-        stage('Deploy New App') {
-            steps {
-                bat '''
-                echo Starting Spring Boot app on port 8081...
-                powershell -Command "Start-Process java -ArgumentList '-jar target\\demo-1.0.0.jar --server.port=8081' -NoNewWindow"
-                '''
-            }
-        }
+       stage('Deploy New App') {
+    steps {
+        bat '''
+        echo Starting Spring Boot app on port 8081...
+        cd target
+        java -jar demo-1.0.0.jar --server.port=8081 > ..\\app.log 2>&1 &
+        '''
+    }
+}
+
     }
 }
