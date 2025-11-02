@@ -1,28 +1,37 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()     // This triggers auto build when code is pushed
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url : 'https://github.com/djha11/ci-cd-demo-app.git'
+                git branch: 'main', url: 'https://github.com/djha11/ci-cd-demo-app.git'
             }
         }
 
         stage('Build with Maven') {
             steps {
-                sh 'mvn clean package'
+                sh "mvn clean package"
             }
         }
 
-        stage('Stop Old App (if running)') {
+        stage('Stop Old App') {
             steps {
-                sh 'pkill -f demo-1.0.0.jar || true'
+                sh '''
+                PID=$(netstat -ano | findstr :8081 | awk "{print \$5}")
+                if [ ! -z "$PID" ]; then
+                    taskkill /PID $PID /F
+                fi
+                '''
             }
         }
 
         stage('Deploy New App') {
             steps {
-                sh 'nohup java -jar target/demo-1.0.0.jar --server.port=8081 > app.log 2>&1 &'
+                sh "java -jar target/demo-1.0.0.jar &"
             }
         }
     }

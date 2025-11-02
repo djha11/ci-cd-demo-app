@@ -15,6 +15,7 @@ public class DemoApplication {
 
     @GetMapping("/")
     public String home() {
-        return "✅ CI/CD Pipeline Demo Successful!";
+        // return "✅ CI/CD Pipeline Demo Successful!";
+        return "Hello, World!";
     }
 }
