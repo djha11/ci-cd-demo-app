@@ -9,9 +9,9 @@ pipeline {
 
         stage('Kill Old Spring Boot Process') {
     steps {
-        powershell '''
+        powershell(script: '''
         Write-Host "Checking for any process using port 8081..."
-        $proc = netstat -ano | findstr ":8081"
+        $proc = netstat -ano | findstr ":8081" 2>$null
         if ($proc) {
             $pid = ($proc -split "\\s+")[-1]
             Write-Host "Killing process with PID $pid"
@@ -19,9 +19,11 @@ pipeline {
         } else {
             Write-Host "No process found on port 8081."
         }
-        '''
+        exit 0   # Always succeed, even if no process found
+        ''', returnStatus: false)
     }
 }
+
 
 	stage('Clean Workspace') {
     steps {
