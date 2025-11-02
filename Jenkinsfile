@@ -1,6 +1,19 @@
 pipeline {
     agent any
 
+	 stages {
+        stage('Kill Old Spring Boot Process') {
+            steps {
+                bat '''
+                echo Checking for any process using port 8081...
+                for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8081') do (
+                    echo Killing process with PID %%a
+                    taskkill /PID %%a /F
+                )
+                '''
+            }
+        }
+
     triggers {
         githubPush()     // This triggers auto build when code is pushed
     }
