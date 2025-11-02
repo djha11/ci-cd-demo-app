@@ -31,7 +31,7 @@ pipeline {
 
         stage('Deploy New App') {
             steps {
-                sh "java -jar target/demo-1.0.0.jar &"
+                sh "java -jar target/demo-1.0.0.jar --server.port=8081 &"
             }
         }
     }
