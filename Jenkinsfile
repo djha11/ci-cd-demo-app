@@ -33,10 +33,13 @@ stage('Stop Old Instance') {
 }
 
         stage('Deploy New App') {
-            steps {
-                bat 'start java -jar target\\demo-1.0.0.jar --server.port=8081'
+    steps {
+        bat '''
+        echo Starting Spring Boot app on port 8081...
+        powershell -Command "Start-Process java -ArgumentList '-jar target\\demo-1.0.0.jar --server.port=8081' -NoNewWindow"
+        '''
+    }
+}
 
-            }
-        }
     }
 }
