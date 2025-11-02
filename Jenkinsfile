@@ -18,19 +18,19 @@ pipeline {
             }
         }
 
-        stage('Stop Old App') {
-            steps {
-                bat '''
-                @echo off
-                echo Checking for any process using port 8081...
-                for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8081') do (
-                    echo Killing process %%a using port 8081...
-                    taskkill /PID %%a /F
-                )
-                echo Port 8081 is now free.
-                '''
-            }
-        }
+stage('Stop Old Instance') {
+    steps {
+        bat '''
+        @echo off
+        echo Checking for existing process on port 8081...
+        for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8081') do (
+            echo Killing process %%a on port 8081...
+            taskkill /PID %%a /F
+        )
+        echo Port 8081 is now free.
+        '''
+    }
+}
 
         stage('Deploy New App') {
             steps {
